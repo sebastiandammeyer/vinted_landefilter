@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vinted Landefilter</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Caveat:wght@700&display=swap');
+
+  :root {
+    --teal: #0d9aa6;
+    --teal-dark: #0a6e77;
+    --teal-darker: #0f3d3e;
+    --ink: #1a1a1a;
+    --paper: #ffffff;
+    --panel: #ffffff;
+    --line: #e7e7e7;
+    --muted: #767676;
+    --shadow: 0 1px 2px rgba(0,0,0,0.04), 0 6px 18px rgba(0,0,0,0.05);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: #f5f5f3;
+    color: var(--ink);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  header {
+    background: var(--paper);
+    border-bottom: 1px solid var(--line);
+    padding: 20px 24px;
+  }
+  .header-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .about-btn {
+    background: none;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 7px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    cursor: pointer;
+    font-family: inherit;
+    margin-top: 0;
+    transition: border-color 0.15s ease, color 0.15s ease;
+  }
+  .about-btn:hover {
+    border-color: var(--teal);
+    color: var(--teal-dark);
+    background: none;
+  }
+  .modal-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(23,24,26,0.45);
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 50;
+  }
+  .modal-backdrop.open { display: flex; }
+  .modal {
+    background: #fff;
+    border-radius: 16px;
+    max-width: 420px;
+    width: 100%;
+    padding: 28px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+  }
+  .modal h3 {
+    margin: 0 0 12px;
+    font-size: 18px;
+    font-weight: 700;
+  }
+  .modal p {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #3a3a3a;
+    margin: 0 0 12px;
+  }
+  .modal .signature {
+    margin-top: 18px;
+    font-size: 14px;
+    color: var(--muted);
+  }
+  .modal .close-btn {
+    margin-top: 20px;
+    width: 100%;
+  }
+  .logo {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+  .logo .brandword {
+    font-family: 'Caveat', cursive;
+    font-weight: 700;
+    color: var(--teal);
+    font-size: 32px;
+    margin-right: 2px;
+  }
+  header p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 14px;
+  }
+  main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 28px 24px 90px;
+  }
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    padding: 24px;
+    margin-bottom: 32px;
+  }
+  label {
+    display: block;
+    font-size: 11.5px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    margin-bottom: 7px;
+  }
+  input[type=text], input[type=number], select {
+    width: 100%;
+    padding: 11px 13px;
+    font-size: 15px;
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    background: #fff;
+    font-family: inherit;
+    color: var(--ink);
+    transition: border-color 0.15s ease;
+  }
+  input:hover, select:hover { border-color: #c9c9c9; }
+  input:focus, select:focus {
+    outline: none;
+    border-color: var(--teal);
+    box-shadow: 0 0 0 3px rgba(13,154,166,0.14);
+  }
+  select { cursor: pointer; }
+  .row {
+    display: flex;
+    gap: 16px;
+    margin-top: 18px;
+    flex-wrap: wrap;
+  }
+  .row > div { flex: 1; min-width: 160px; }
+  .field-hint {
+    font-size: 12px;
+    color: #c0392b;
+    margin-top: 5px;
+    min-height: 14px;
+  }
+  button {
+    margin-top: 22px;
+    background: var(--teal-darker);
+    color: #fff;
+    border: none;
+    border-radius: 24px;
+    padding: 12px 26px;
+    font-size: 14.5px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.15s ease, transform 0.1s ease;
+  }
+  button:hover:not(:disabled) { background: var(--teal-dark); }
+  button:active:not(:disabled) { transform: scale(0.98); }
+  button:disabled { background: #c7c7c7; cursor: default; }
+  .status {
+    margin-top: 16px;
+    font-size: 13.5px;
+    color: var(--muted);
+    min-height: 18px;
+  }
+  .status.error { color: #c0392b; font-weight: 600; }
+  .disclaimer {
+    font-size: 12px;
+    color: var(--muted);
+    margin: 16px 0 0;
+    line-height: 1.55;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+  }
+  .results-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 16px;
+  }
+  .results-head h2 {
+    font-size: 16px;
+    font-weight: 700;
+    margin: 0;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap: 20px 16px;
+  }
+  .card {
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: inherit;
+  }
+  .thumb {
+    position: relative;
+    border-radius: 14px;
+    overflow: hidden;
+    background: #f0f0ee;
+  }
+  .thumb img {
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.2s ease;
+  }
+  .card:hover .thumb img { transform: scale(1.03); }
+  .heart {
+    position: absolute;
+    right: 8px;
+    bottom: 8px;
+    background: rgba(255,255,255,0.92);
+    border-radius: 999px;
+    padding: 5px 9px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+  }
+  .heart svg { width: 14px; height: 14px; }
+  .card .info { padding: 10px 2px 0; }
+  .card .title {
+    font-size: 13.5px;
+    font-weight: 500;
+    line-height: 1.35;
+    height: 36px;
+    overflow: hidden;
+    margin-bottom: 2px;
+  }
+  .card .condition {
+    font-size: 12.5px;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .card .price { font-weight: 700; font-size: 14.5px; }
+  .card .total {
+    font-size: 12.5px;
+    color: var(--teal-dark);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 1px;
+  }
+  .card .total svg { width: 12px; height: 12px; }
+  .empty {
+    color: var(--muted);
+    font-size: 14px;
+    border: 1px dashed var(--line);
+    border-radius: 12px;
+    padding: 28px;
+    text-align: center;
+    background: var(--panel);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="header-left">
+      <span class="logo"><span class="brandword">Vinted</span> Landefilter</span>
+      <p>&mdash; find kun varer fra sælgere i det land, du vælger</p>
+    </div>
+    <button class="about-btn" id="aboutBtn">Om siden</button>
+  </div>
+</header>
+
+<div class="modal-backdrop" id="aboutModal">
+  <div class="modal">
+    <h3>Om Vinted Landefilter</h3>
+    <p>
+      Dette er et lille værktøj, der lader dig indsætte en Vinted-søgning
+      og filtrere resultaterne, så du kun ser varer fra sælgere i det
+      land, du vælger. Det bruger sælgerens valuta som praj for land -
+      en hurtig og forholdsvis pålidelig metode, men ikke en garanti.
+    </p>
+    <p>
+      Det er et uofficielt, personligt projekt og ikke tilknyttet Vinted.
+    </p>
+    <div class="signature">Mvh. Sebastian Dammeyer</div>
+    <button class="close-btn" id="aboutClose">Luk</button>
+  </div>
+</div>
+
+<main>
+  <div class="panel">
+    <label for="url">Vinted søge-URL</label>
+    <input type="text" id="url" placeholder="https://www.vinted.dk/catalog?search_text=...">
+
+    <div class="row">
+      <div>
+        <label for="country">Sælgerens valuta</label>
+        <select id="country">
+          <option value="DK" selected>DKK &middot; Danmark</option>
+          <option value="SE">SEK &middot; Sverige</option>
+          <option value="NO">NOK &middot; Norge</option>
+          <option value="PL">PLN &middot; Polen</option>
+          <option value="GB">GBP &middot; Storbritannien</option>
+          <option value="CZ">CZK &middot; Tjekkiet</option>
+          <option value="HU">HUF &middot; Ungarn</option>
+          <option value="RO">RON &middot; Rumænien</option>
+          <option value="US">USD &middot; USA</option>
+          <option value="DE">EUR &middot; eurolande</option>
+        </select>
+      </div>
+      <div>
+        <label for="maxpages">Max sider (à ~96 varer)</label>
+        <input type="number" id="maxpages" value="10" min="1" max="10">
+        <div class="field-hint" id="maxpagesHint"></div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label for="sort">Sorter efter</label>
+        <select id="sort">
+          <option value="relevance" selected>Relevans</option>
+          <option value="price_high_to_low">Pris: høj til lav</option>
+          <option value="price_low_to_high">Pris: lav til høj</option>
+          <option value="newest_first">Nyeste først</option>
+        </select>
+      </div>
+    </div>
+
+    <button id="go">Søg</button>
+    <div class="status" id="status"></div>
+
+    <p class="disclaimer">
+      Filtreringen bruger sælgerens valuta som praj for land &mdash; meget pålideligt for
+      lande med egen valuta (fx DKK), men eurolande kan ikke skelnes indbyrdes.
+    </p>
+  </div>
+
+  <div id="resultsWrap"></div>
+</main>
+
+<script>
+const goBtn = document.getElementById('go');
+const statusEl = document.getElementById('status');
+const resultsWrap = document.getElementById('resultsWrap');
+const maxPagesInput = document.getElementById('maxpages');
+const maxPagesHint = document.getElementById('maxpagesHint');
+
+const aboutBtn = document.getElementById('aboutBtn');
+const aboutModal = document.getElementById('aboutModal');
+const aboutClose = document.getElementById('aboutClose');
+
+aboutBtn.addEventListener('click', () => aboutModal.classList.add('open'));
+aboutClose.addEventListener('click', () => aboutModal.classList.remove('open'));
+aboutModal.addEventListener('click', (e) => {
+  if (e.target === aboutModal) aboutModal.classList.remove('open');
+});
+
+maxPagesInput.addEventListener('input', () => {
+  const val = Number(maxPagesInput.value);
+  maxPagesHint.textContent = val > 10 ? 'Vinted tillader maks. 10 sider ad gangen.' : '';
+});
+
+const HEART_SVG = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7.5-4.6-10-9.3C.4 8.2 2 4.5 5.6 4 8 3.7 10 5 12 7.3 14 5 16 3.7 18.4 4 22 4.5 23.6 8.2 22 11.7 19.5 16.4 12 21 12 21z"/></svg>';
+
+function fmtPrice(amount, currency) {
+  if (amount == null) return '';
+  const n = Number(amount);
+  const formatted = Number.isFinite(n) ? n.toFixed(2).replace('.', ',') : amount;
+  return `${formatted} ${currency || ''}`.trim();
+}
+
+function renderResults(items) {
+  if (!items.length) {
+    resultsWrap.innerHTML = '<div class="empty">Ingen matchende varer blev fundet i denne søgning.</div>';
+    return;
+  }
+  const cards = items.map(item => `
+    <a class="card" href="${item.url}" target="_blank" rel="noopener">
+      <div class="thumb">
+        ${item.photo ? `<img src="${item.photo}" alt="" loading="lazy">` : ''}
+        ${item.favourite_count != null ? `<div class="heart">${HEART_SVG}${item.favourite_count}</div>` : ''}
+      </div>
+      <div class="info">
+        <div class="title">${item.title || ''}</div>
+        ${item.status ? `<div class="condition">${item.status}</div>` : ''}
+        <div class="price">${fmtPrice(item.price, item.currency)}</div>
+      </div>
+    </a>
+  `).join('');
+
+  resultsWrap.innerHTML = `
+    <div class="results-head">
+      <h2>${items.length} match${items.length === 1 ? '' : 'es'}</h2>
+    </div>
+    <div class="grid">${cards}</div>
+  `;
+}
+
+async function poll(jobId) {
+  const res = await fetch(`/api/status/${jobId}`);
+  const job = await res.json();
+
+  if (job.progress) statusEl.textContent = job.progress;
+
+  if (job.status === 'running') {
+    setTimeout(() => poll(jobId), 800);
+  } else if (job.status === 'done') {
+    goBtn.disabled = false;
+    renderResults(job.results || []);
+  } else if (job.status === 'error') {
+    goBtn.disabled = false;
+    statusEl.textContent = job.error || 'Der skete en fejl.';
+    statusEl.classList.add('error');
+  }
+}
+
+goBtn.addEventListener('click', async () => {
+  const url = document.getElementById('url').value.trim();
+  const country = document.getElementById('country').value.trim() || 'DK';
+  const maxPages = document.getElementById('maxpages').value || 10;
+  const order = document.getElementById('sort').value || 'relevance';
+
+  if (!url) {
+    statusEl.textContent = 'Indsæt en Vinted søge-URL først.';
+    statusEl.classList.add('error');
+    return;
+  }
+
+  statusEl.classList.remove('error');
+  statusEl.textContent = 'Starter...';
+  resultsWrap.innerHTML = '';
+  goBtn.disabled = true;
+
+  const res = await fetch('/api/search', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ url, country, max_pages: maxPages, order }),
+  });
+  const data = await res.json();
+
+  if (data.error) {
+    statusEl.textContent = data.error;
+    statusEl.classList.add('error');
+    goBtn.disabled = false;
+    return;
+  }
+
+  poll(data.job_id);
+});
+</script>
+
+</body>
+</html>
