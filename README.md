@@ -21,8 +21,19 @@ servere end Vinted selv.
 
 **Mac:**
 1. Dobbeltklik `start-mac.command`.
-2. Første gang skal du højreklikke på filen → "Åbn" (macOS blokerer normalt
-   ukendte scripts ved almindeligt dobbeltklik første gang) → bekræft "Åbn".
+2. Første gang blokerer macOS filen med en advarsel i stil med *"Apple kunne
+   ikke bekræfte, at start-mac.command er fri for malware"* - det er helt
+   normalt for enhver ukendt fil, man downloader fra internettet, og ikke
+   noget galt med selve filen. Sådan kommer du forbi den:
+   - **Nemmest:** Gå til **Systemindstillinger → Privatliv og sikkerhed**,
+     scroll ned - der skulle stå en besked om, at "start-mac.command" blev
+     blokeret, med en knap **"Åbn alligevel"**. Klik den, prøv at åbne
+     filen igen, og bekræft i dialogboksen, der dukker op.
+   - **Alternativ (via Terminal, kun denne ene gang):**
+     ```bash
+     xattr -d com.apple.quarantine start-mac.command
+     ```
+     Herefter virker almindeligt dobbeltklik uden advarsel.
 3. Herefter kan filen dobbeltklikkes normalt. Den sætter automatisk alt op
    første gang (kan tage et minut), og åbner derefter browseren for dig.
 4. For at lukke appen igen: luk bare det terminalvindue, der åbnede.
@@ -128,8 +139,46 @@ holder op med at virke:
 Hvis feltnavnet er ændret, ret det i `seller_currency_of()` i
 `vinted_client.py`.
 
+## Sådan sætter du et ikon på start-filen
+
+Der ligger et logo klar i `icon/`-mappen - et PNG til Mac, og en `.ico`-fil
+til Windows (Windows kræver det format til ikoner, almindelige billeder
+duer ikke).
+
+**Mac:**
+1. Åbn `icon/6-pin-og-vinted-tekst.png`, og kopiér billedet (marker det i
+   Finder og tryk `Cmd+C`, eller åbn det i Forhåndsvisning og tryk
+   `Cmd+A` → `Cmd+C`).
+2. Klik én gang på `start-mac.command` i Finder, og tryk `Cmd+I` (Vis info).
+3. Klik på det lille ikon øverst til venstre i info-vinduet, så det bliver
+   markeret (blåt).
+4. Tryk `Cmd+V` for at indsætte billedet som ikon.
+5. Luk info-vinduet - filen har nu det nye ikon.
+
+**OBS:** dette gemmes kun lokalt på din egen computer og følger ikke med,
+hvis filen deles videre (fx via GitHub) - hver person skal selv gøre det
+samme, hvis de vil have ikonet.
+
+**Windows:**
+Windows tillader ikke at sætte et ikon direkte på en `.bat`-fil - det skal
+gøres via en genvej i stedet:
+1. Højreklik på `start-windows.bat` → **Send til → Skrivebord (opret
+   genvej)**. Der dukker nu en ny fil op på skrivebordet, fx
+   "start-windows.bat - Genvej".
+2. Højreklik på **genvejen** → **Egenskaber**.
+3. Klik **Skift ikon...** under fanen "Genvej".
+4. Klik **Gennemse...**, og find `icon/vinted-landefilter.ico` i den
+   udpakkede projektmappe.
+5. Vælg filen → **OK** → **Anvend** → **OK**.
+
+Genvejen på skrivebordet har nu det nye ikon, og starter appen, når man
+dobbeltklikker den (den peger jo på den originale `.bat`-fil).
+
+
+
 ## Filer
 
+- `icon/` - logo til at sætte som ikon på start-filerne (se ovenfor)
 - `start-mac.command` / `start-windows.bat` - dobbeltklik for at starte
   appen uden terminal (se "Hurtig start" ovenfor)
 - `app.py` - lille Flask-server (webinterfacet + API-endpoints)

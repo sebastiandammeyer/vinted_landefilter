@@ -27,9 +27,20 @@ method is most reliable - see "How it works" below for why.
 
 **Mac:**
 1. Double-click `start-mac.command`.
-2. The first time, you'll need to right-click the file → "Open" (macOS
-   blocks unknown scripts on a normal double-click the first time) →
-   confirm "Open".
+2. The first time, macOS blocks the file with a warning along the lines of
+   *"Apple could not verify that start-mac.command is free of malware"* -
+   this is completely normal for any unknown file downloaded from the
+   internet, and nothing wrong with the file itself. Here's how to get
+   past it:
+   - **Easiest:** Go to **System Settings → Privacy & Security**, scroll
+     down - there should be a message saying "start-mac.command" was
+     blocked, with an **"Open Anyway"** button. Click it, try opening the
+     file again, and confirm in the dialog that appears.
+   - **Alternative (via Terminal, only needed once):**
+     ```bash
+     xattr -d com.apple.quarantine start-mac.command
+     ```
+     After that, a normal double-click will work without any warning.
 3. After that, you can just double-click it normally. It automatically
    sets everything up the first time (can take a minute), then opens
    your browser for you.
@@ -140,8 +151,44 @@ scripts if something stops working:
 If the field name has changed, update it in `seller_currency_of()` in
 `vinted_client.py`.
 
+## Setting an icon on the start file
+
+There's a logo ready to go in the `icon/` folder - a PNG for Mac, and an
+`.ico` file for Windows (Windows requires that specific format for icons,
+regular images won't work).
+
+**Mac:**
+1. Open `icon/6-pin-og-vinted-tekst.png`, and copy the image (select it
+   in Finder and press `Cmd+C`, or open it in Preview and press `Cmd+A`
+   → `Cmd+C`).
+2. Click once on `start-mac.command` in Finder, then press `Cmd+I` (Get Info).
+3. Click the small icon in the top-left of the info window so it's
+   selected (turns blue).
+4. Press `Cmd+V` to paste the image in as the icon.
+5. Close the info window - the file now has the new icon.
+
+**Note:** this is only saved locally on your own computer and doesn't
+travel with the file if it's shared further (e.g. via GitHub) - each
+person needs to do this themselves if they want the icon.
+
+**Windows:**
+Windows doesn't let you set an icon directly on a `.bat` file - it has
+to be done via a shortcut instead:
+1. Right-click `start-windows.bat` → **Send to → Desktop (create
+   shortcut)**. A new file will appear on your desktop, e.g.
+   "start-windows.bat - Shortcut".
+2. Right-click the **shortcut** → **Properties**.
+3. Click **Change Icon...** under the "Shortcut" tab.
+4. Click **Browse...**, and find `icon/vinted-landefilter.ico` inside
+   the unzipped project folder.
+5. Select the file → **OK** → **Apply** → **OK**.
+
+The shortcut on your desktop now has the new icon, and starts the app
+when double-clicked (it points to the original `.bat` file).
+
 ## Files
 
+- `icon/` - logo to set as the icon on the start files (see above)
 - `start-mac.command` / `start-windows.bat` - double-click to start the
   app without a terminal (see "Quick start" above)
 - `app.py` - small Flask server (the web interface + API endpoints)
