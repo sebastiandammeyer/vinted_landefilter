@@ -1,17 +1,47 @@
 # Vinted Landefilter
 
-Lille lokalt program: du indsætter en Vinted søge-URL, og det finder
-kun de varer, der med stor sandsynlighed er fra en dansk sælger. Kører
-som en rigtig lille webside i din browser (localhost), men al logik
-kører lokalt på din egen maskine - intet sendes til andre servere end
-Vinted selv.
+Lille lokalt program: du indsætter en Vinted søge-URL, vælger et land, og
+det finder kun de varer, der med stor sandsynlighed er fra en sælger i
+det land. Kører som en rigtig lille webside i din browser (localhost),
+men al logik kører lokalt på din egen maskine - intet sendes til andre
+servere end Vinted selv.
 
-## Sådan kører du det
+## Sådan henter du koden
+
+1. Gå til GitHub-siden for projektet.
+2. Klik den grønne knap **"Code"** → **"Download ZIP"** (nemmest hvis du
+   ikke bruger git selv), og pak ZIP-filen ud et sted på din computer.
+   (Alternativt: `git clone <repo-url>`, hvis du er vant til git.)
+3. Fortsæt til "Hurtig start" nedenfor - det er den udpakkede mappe, du
+   skal arbejde i.
+
+## Hurtig start (uden terminal)
+
+**Mac:**
+1. Dobbeltklik `start-mac.command`.
+2. Første gang skal du højreklikke på filen → "Åbn" (macOS blokerer normalt
+   ukendte scripts ved almindeligt dobbeltklik første gang) → bekræft "Åbn".
+3. Herefter kan filen dobbeltklikkes normalt. Den sætter automatisk alt op
+   første gang (kan tage et minut), og åbner derefter browseren for dig.
+4. For at lukke appen igen: luk bare det terminalvindue, der åbnede.
+
+Hvis dobbeltklik ikke starter noget (kan ske ved download fra GitHub), skal
+filen først gøres "eksekverbar" én gang i Terminal:
+```bash
+chmod +x start-mac.command
+```
+
+**Windows:**
+1. Dobbeltklik `start-windows.bat`.
+2. Den sætter automatisk alt op første gang, og åbner derefter browseren.
+3. For at lukke appen igen: luk bare det vindue, der åbnede.
+
+## Sådan kører du det (med terminal)
 
 Kræver Python 3.9+.
 
 ```bash
-cd vinted-dk-filter
+cd vinted_landefilter        # eller navnet på den mappe, du hentede/pakkede ud
 python3 -m venv venv
 source venv/bin/activate        # Windows: venv\Scripts\activate
 pip install -r requirements.txt
@@ -32,12 +62,13 @@ og tryk "Søg".
    (i stedet for at du selv skal klikke "næste side").
 2. Vinted viser ikke sælgerens land direkte. Til gengæld indeholder hver
    vare et `conversion`-felt, når prisen er regnet om fra sælgerens egen
-   valuta til din visningsvaluta (DKK). Er `conversion` IKKE til stede,
-   er varen allerede prissat i DKK af sælgeren selv - og da DKK reelt
-   kun bruges af Vinteds danske marked, er det et stærkt (om end ikke
-   100% garanteret) tegn på, at sælgeren er dansk.
-3. Scriptet filtrerer på præcis dét, og viser kun de varer, der matcher,
-   i et billedgitter med link direkte til varen på Vinted.
+   valuta til din visningsvaluta. Er `conversion` IKKE til stede, er varen
+   allerede prissat i den valuta, du vælger, af sælgeren selv - fx er DKK
+   et stærkt (om end ikke 100% garanteret) tegn på en dansk sælger, fordi
+   DKK reelt kun bruges af Vinteds danske marked.
+3. Scriptet filtrerer på præcis dét, ud fra det land/den valuta du vælger
+   i dropdown'en, og viser kun de varer, der matcher, i et billedgitter
+   med link direkte til varen på Vinted.
 
 Denne metode er markant hurtigere og mere robust end at slå hver vares
 land op enkeltvis, fordi den udelukkende bruger data, der allerede
@@ -67,46 +98,19 @@ og ingen risiko for at blive blokeret af bot-beskyttelse.
   understøttet integration, og Vinted kan til enhver tid ændre eller
   blokere adgangen.
 
-## Lægge den op med et rigtigt link (Render)
+## Kan den lægges op med et rigtigt link, så andre bare kan besøge den?
 
-Denne app har en Python/Flask-baggrund (den henter og filtrerer Vinted-data
-server-side), så den kan IKKE ligge som almindelig GitHub Pages - det kan
-kun vise rene HTML/CSS/JS-sider. I stedet bruger vi Render.com, som kan
-køre selve Python-koden og give dig et rigtigt link.
+Kort svar: nej, ikke i praksis. Appen er testet med gratis hosting
+(Render.com), og Vinted blokerer kald derfra (statuskode 403) - deres
+bot-beskyttelse er mere mistroisk over for datacenter-IP-adresser end
+almindelige hjemme-IP'er. Det samme vil sandsynligvis ske med andre
+tilsvarende gratis hosting-tjenester.
 
-1. **Push koden til GitHub** som et almindeligt repo (`git init`,
-   `git add .`, `git commit -m "Første version"`, opret repo på GitHub,
-   `git push`). `venv/` og `__pycache__/` bliver automatisk sprunget
-   over pga. `.gitignore`.
-
-2. **Opret en gratis konto på** [render.com](https://render.com) og log
-   ind med din GitHub-konto.
-
-3. Klik **New +** → **Web Service**, og vælg dit repo.
-
-4. Udfyld:
-   - **Name**: et navn efter eget valg (bliver en del af URL'en)
-   - **Runtime**: Python 3
-   - **Build Command**: `pip install -r requirements.txt`
-   - **Start Command**: `gunicorn app:app` (Render finder den ofte selv
-     via `Procfile`)
-   - **Instance Type**: Free
-
-5. Klik **Create Web Service**. Efter et par minutters bygning får du et
-   link i stil med `https://dit-navn.onrender.com` - det er det, du kan
-   sende videre.
-
-**Værd at vide om den gratis Render-plan:**
-- Appen "sover", når der ikke har været besøgende et stykke tid - det
-  første besøg efter en pause kan derfor tage 30-60 sekunder at loade,
-  mens den vågner.
-- Fordi det nu er et offentligt, delt link, kan ALLE med linket bruge
-  det til at forespørge Vinted - det øger risikoen for, at Vinted
-  rate-limiter eller blokerer selve Render-serverens IP (ikke kun din
-  egen). Det er stadig fint til at dele med nogle få personer, men
-  ikke tænkt som noget, der skal bruges i stor skala.
-
-
+Appen er derfor tænkt som et **lokalt program**: hver person, der vil
+bruge det, henter koden (se "Sådan henter du koden" ovenfor) og kører
+den selv med sin egen internetforbindelse via "Hurtig start". Det er
+sådan set den normale model for den slags uofficielle, personlige
+værktøjer.
 
 ## Fejlsøgning
 
@@ -124,6 +128,8 @@ Hvis feltnavnet er ændret, ret det i `seller_currency_of()` i
 
 ## Filer
 
+- `start-mac.command` / `start-windows.bat` - dobbeltklik for at starte
+  appen uden terminal (se "Hurtig start" ovenfor)
 - `app.py` - lille Flask-server (webinterfacet + API-endpoints)
 - `vinted_client.py` - selve søge- og filtreringslogikken
 - `templates/index.html` - brugerfladen
