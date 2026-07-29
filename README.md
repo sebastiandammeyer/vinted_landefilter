@@ -1,5 +1,7 @@
 # Vinted Landefilter
 
+*[Read in English](README.en.md)*
+
 Lille lokalt program: du indsætter en Vinted søge-URL, vælger et land, og
 det finder kun de varer, der med stor sandsynlighed er fra en sælger i
 det land. Kører som en rigtig lille webside i din browser (localhost),
