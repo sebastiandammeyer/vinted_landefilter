@@ -8,6 +8,10 @@ det land. Kører som en rigtig lille webside i din browser (localhost),
 men al logik kører lokalt på din egen maskine - intet sendes til andre
 servere end Vinted selv.
 
+**Kræver Python 3.9+ installeret** ([download her](https://www.python.org/downloads/))
+- det gælder uanset om du bruger "Hurtig start" eller terminal-metoden
+nedenfor, da begge starter Python i baggrunden.
+
 ## Sådan henter du koden
 
 1. Gå til GitHub-siden for projektet.
@@ -49,9 +53,14 @@ chmod +x start-mac.command
 2. Den sætter automatisk alt op første gang, og åbner derefter browseren.
 3. For at lukke appen igen: luk bare det vindue, der åbnede.
 
+*(Denne del er endnu ikke testet i praksis på en rigtig Windows-maskine -
+sig endelig til, hvis noget driller, så jeg kan rette det.)*
+
 ## Sådan kører du det (med terminal)
 
-Kræver Python 3.9+.
+Dette er **ikke nødvendigt**, hvis "Hurtig start" ovenfor virkede for dig -
+det er et alternativ, kun relevant hvis du er vant til at bruge terminal,
+eller hvis dobbeltklik-metoden af en eller anden grund driller.
 
 ```bash
 cd vinted_landefilter        # eller navnet på den mappe, du hentede/pakkede ud
@@ -87,6 +96,41 @@ Denne metode er markant hurtigere og mere robust end at slå hver vares
 land op enkeltvis, fordi den udelukkende bruger data, der allerede
 kommer med i det almindelige søgekald - ingen ekstra kald pr. vare,
 og ingen risiko for at blive blokeret af bot-beskyttelse.
+
+## Sådan sætter du et ikon på start-filen
+
+Der ligger et logo klar i `icon/`-mappen - et PNG til Mac, og en `.ico`-fil
+til Windows (Windows kræver det format til ikoner, almindelige billeder
+duer ikke).
+
+**Mac:**
+1. Åbn `icon/6-pin-og-vinted-tekst.png`, og kopiér billedet (marker det i
+   Finder og tryk `Cmd+C`, eller åbn det i Forhåndsvisning og tryk
+   `Cmd+A` → `Cmd+C`).
+2. Klik én gang på `start-mac.command` i Finder, og tryk `Cmd+I` (Vis info).
+3. Klik på det lille ikon øverst til venstre i info-vinduet, så det bliver
+   markeret (blåt).
+4. Tryk `Cmd+V` for at indsætte billedet som ikon.
+5. Luk info-vinduet - filen har nu det nye ikon.
+
+**OBS:** dette gemmes kun lokalt på din egen computer og følger ikke med,
+hvis filen deles videre (fx via GitHub) - hver person skal selv gøre det
+samme, hvis de vil have ikonet.
+
+**Windows:**
+Windows tillader ikke at sætte et ikon direkte på en `.bat`-fil - det skal
+gøres via en genvej i stedet:
+1. Højreklik på `start-windows.bat` → **Send til → Skrivebord (opret
+   genvej)**. Der dukker nu en ny fil op på skrivebordet, fx
+   "start-windows.bat - Genvej".
+2. Højreklik på **genvejen** → **Egenskaber**.
+3. Klik **Skift ikon...** under fanen "Genvej".
+4. Klik **Gennemse...**, og find `icon/vinted-landefilter.ico` i den
+   udpakkede projektmappe.
+5. Vælg filen → **OK** → **Anvend** → **OK**.
+
+Genvejen på skrivebordet har nu det nye ikon, og starter appen, når man
+dobbeltklikker den (den peger jo på den originale `.bat`-fil).
 
 ## Vigtigt at vide
 
@@ -125,57 +169,6 @@ den selv med sin egen internetforbindelse via "Hurtig start". Det er
 sådan set den normale model for den slags uofficielle, personlige
 værktøjer.
 
-## Fejlsøgning
-
-Vinteds interne API er udokumenteret, så feltnavnene i JSON-svaret kan
-ændre sig over tid. Mappen indeholder et par hjælpescripts, hvis noget
-holder op med at virke:
-
-- `debug_search_fields.py "<søge-url>"` - viser alle felter på et par
-  varer fra en søgning, og fremhæver dem der ligner pris/valuta/land.
-  Brug den til at tjekke, om `conversion`-feltet stadig hedder det
-  samme, hvis filtreringen pludselig holder op med at give resultater.
-
-Hvis feltnavnet er ændret, ret det i `seller_currency_of()` i
-`vinted_client.py`.
-
-## Sådan sætter du et ikon på start-filen
-
-Der ligger et logo klar i `icon/`-mappen - et PNG til Mac, og en `.ico`-fil
-til Windows (Windows kræver det format til ikoner, almindelige billeder
-duer ikke).
-
-**Mac:**
-1. Åbn `icon/6-pin-og-vinted-tekst.png`, og kopiér billedet (marker det i
-   Finder og tryk `Cmd+C`, eller åbn det i Forhåndsvisning og tryk
-   `Cmd+A` → `Cmd+C`).
-2. Klik én gang på `start-mac.command` i Finder, og tryk `Cmd+I` (Vis info).
-3. Klik på det lille ikon øverst til venstre i info-vinduet, så det bliver
-   markeret (blåt).
-4. Tryk `Cmd+V` for at indsætte billedet som ikon.
-5. Luk info-vinduet - filen har nu det nye ikon.
-
-**OBS:** dette gemmes kun lokalt på din egen computer og følger ikke med,
-hvis filen deles videre (fx via GitHub) - hver person skal selv gøre det
-samme, hvis de vil have ikonet.
-
-**Windows:**
-Windows tillader ikke at sætte et ikon direkte på en `.bat`-fil - det skal
-gøres via en genvej i stedet:
-1. Højreklik på `start-windows.bat` → **Send til → Skrivebord (opret
-   genvej)**. Der dukker nu en ny fil op på skrivebordet, fx
-   "start-windows.bat - Genvej".
-2. Højreklik på **genvejen** → **Egenskaber**.
-3. Klik **Skift ikon...** under fanen "Genvej".
-4. Klik **Gennemse...**, og find `icon/vinted-landefilter.ico` i den
-   udpakkede projektmappe.
-5. Vælg filen → **OK** → **Anvend** → **OK**.
-
-Genvejen på skrivebordet har nu det nye ikon, og starter appen, når man
-dobbeltklikker den (den peger jo på den originale `.bat`-fil).
-
-
-
 ## Filer
 
 - `icon/` - logo til at sætte som ikon på start-filerne (se ovenfor)
@@ -184,6 +177,4 @@ dobbeltklikker den (den peger jo på den originale `.bat`-fil).
 - `app.py` - lille Flask-server (webinterfacet + API-endpoints)
 - `vinted_client.py` - selve søge- og filtreringslogikken
 - `templates/index.html` - brugerfladen
-- `debug_search_fields.py` - fejlsøgningsværktøj til at undersøge
-  feltnavne i søgeresultater
 - `requirements.txt` - Python-pakker der skal bruges (flask, requests)

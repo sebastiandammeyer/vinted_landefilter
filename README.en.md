@@ -14,6 +14,10 @@ Vinted doesn't offer that natively. It has since been generalized to
 support other countries too, but Denmark (DKK) is where the underlying
 method is most reliable - see "How it works" below for why.
 
+**Requires Python 3.9+ installed** ([download here](https://www.python.org/downloads/))
+- this applies whether you use "Quick start" or the terminal method
+below, since both start Python in the background.
+
 ## Getting the code
 
 1. Go to the project's GitHub page.
@@ -58,9 +62,14 @@ chmod +x start-mac.command
    browser.
 3. To close the app again: just close the window that opened.
 
+*(This part hasn't been tested yet on an actual Windows machine - please
+let me know if anything doesn't work, so I can fix it.)*
+
 ## Running it (with a terminal)
 
-Requires Python 3.9+.
+This is **not necessary** if "Quick start" above worked for you - it's an
+alternative, only relevant if you're used to working in a terminal, or if
+the double-click method isn't working for some reason.
 
 ```bash
 cd vinted_landefilter        # or whatever you named/unzipped the folder to
@@ -99,6 +108,41 @@ each item's country individually, because it relies entirely on data
 that's already included in the regular search call - no extra call per
 item, and no risk of being blocked by bot protection.
 
+## Setting an icon on the start file
+
+There's a logo ready to go in the `icon/` folder - a PNG for Mac, and an
+`.ico` file for Windows (Windows requires that specific format for icons,
+regular images won't work).
+
+**Mac:**
+1. Open `icon/6-pin-og-vinted-tekst.png`, and copy the image (select it
+   in Finder and press `Cmd+C`, or open it in Preview and press `Cmd+A`
+   → `Cmd+C`).
+2. Click once on `start-mac.command` in Finder, then press `Cmd+I` (Get Info).
+3. Click the small icon in the top-left of the info window so it's
+   selected (turns blue).
+4. Press `Cmd+V` to paste the image in as the icon.
+5. Close the info window - the file now has the new icon.
+
+**Note:** this is only saved locally on your own computer and doesn't
+travel with the file if it's shared further (e.g. via GitHub) - each
+person needs to do this themselves if they want the icon.
+
+**Windows:**
+Windows doesn't let you set an icon directly on a `.bat` file - it has
+to be done via a shortcut instead:
+1. Right-click `start-windows.bat` → **Send to → Desktop (create
+   shortcut)**. A new file will appear on your desktop, e.g.
+   "start-windows.bat - Shortcut".
+2. Right-click the **shortcut** → **Properties**.
+3. Click **Change Icon...** under the "Shortcut" tab.
+4. Click **Browse...**, and find `icon/vinted-landefilter.ico` inside
+   the unzipped project folder.
+5. Select the file → **OK** → **Apply** → **OK**.
+
+The shortcut on your desktop now has the new icon, and starts the app
+when double-clicked (it points to the original `.bat` file).
+
 ## Good to know
 
 - **This is a proxy, not a guarantee.** The method assumes "no currency
@@ -136,56 +180,6 @@ runs it themselves, using their own internet connection, via "Quick
 start". This is more or less the standard model for this kind of
 unofficial, personal tool.
 
-## Troubleshooting
-
-Vinted's internal API is undocumented, so the field names in the JSON
-response can change over time. The folder includes a couple of helper
-scripts if something stops working:
-
-- `debug_search_fields.py "<search-url>"` - shows all fields on a few
-  items from a search, and highlights the ones that look like
-  price/currency/country. Use it to check whether the `conversion`
-  field is still called that, if filtering suddenly stops returning
-  results.
-
-If the field name has changed, update it in `seller_currency_of()` in
-`vinted_client.py`.
-
-## Setting an icon on the start file
-
-There's a logo ready to go in the `icon/` folder - a PNG for Mac, and an
-`.ico` file for Windows (Windows requires that specific format for icons,
-regular images won't work).
-
-**Mac:**
-1. Open `icon/6-pin-og-vinted-tekst.png`, and copy the image (select it
-   in Finder and press `Cmd+C`, or open it in Preview and press `Cmd+A`
-   → `Cmd+C`).
-2. Click once on `start-mac.command` in Finder, then press `Cmd+I` (Get Info).
-3. Click the small icon in the top-left of the info window so it's
-   selected (turns blue).
-4. Press `Cmd+V` to paste the image in as the icon.
-5. Close the info window - the file now has the new icon.
-
-**Note:** this is only saved locally on your own computer and doesn't
-travel with the file if it's shared further (e.g. via GitHub) - each
-person needs to do this themselves if they want the icon.
-
-**Windows:**
-Windows doesn't let you set an icon directly on a `.bat` file - it has
-to be done via a shortcut instead:
-1. Right-click `start-windows.bat` → **Send to → Desktop (create
-   shortcut)**. A new file will appear on your desktop, e.g.
-   "start-windows.bat - Shortcut".
-2. Right-click the **shortcut** → **Properties**.
-3. Click **Change Icon...** under the "Shortcut" tab.
-4. Click **Browse...**, and find `icon/vinted-landefilter.ico` inside
-   the unzipped project folder.
-5. Select the file → **OK** → **Apply** → **OK**.
-
-The shortcut on your desktop now has the new icon, and starts the app
-when double-clicked (it points to the original `.bat` file).
-
 ## Files
 
 - `icon/` - logo to set as the icon on the start files (see above)
@@ -194,6 +188,4 @@ when double-clicked (it points to the original `.bat` file).
 - `app.py` - small Flask server (the web interface + API endpoints)
 - `vinted_client.py` - the actual search and filtering logic
 - `templates/index.html` - the user interface
-- `debug_search_fields.py` - troubleshooting tool for inspecting field
-  names in search results
 - `requirements.txt` - the Python packages needed (flask, requests)
